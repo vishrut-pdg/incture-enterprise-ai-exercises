@@ -1,0 +1,111 @@
+"""Deterministic policy evaluation. Returns findings from persisted facts; contains no LLM calls. Provided infrastructure; outside learner edits."""
+
+from datetime import date
+from decimal import Decimal
+
+from pydantic import BaseModel
+
+
+class Finding(BaseModel):
+    code: str
+    severity: str
+    message: str
+    evidence_ids: list[str] = []
+
+
+def calculate_checks(
+    claim: dict,
+    policy: dict,
+    evidence: list[dict],
+    duplicates: list[str],
+    today: date | None = None,
+) -> list[Finding]:
+    today = today or date.today()
+    findings = []
+
+    def add(code, severity, message, ids=None):
+        findings.append(
+            Finding(
+                code=code, severity=severity, message=message, evidence_ids=ids or []
+            )
+        )
+
+    rules = {r["code"]: r["parameters"] for r in policy["rules"]}
+    amount = Decimal(str(claim["amount"]))
+    if (
+        not claim["lines"]
+        or amount <= 0
+        or any(Decimal(str(line["amount"])) <= 0 for line in claim["lines"])
+    ):
+        add(
+            "amount_validity",
+            "issue",
+            "Amounts must be positive and claim lines must exist.",
+        )
+    if (
+        sum((Decimal(str(line["amount"])) for line in claim["lines"]), Decimal(0))
+        != amount
+    ):
+        add(
+            "amount_total",
+            "issue",
+            "Claim total does not equal the sum of line amounts.",
+        )
+    if claim["currency"] != policy["currency"]:
+        add(
+            "currency",
+            "unverified",
+            "Currency differs from policy; conversion evidence is missing.",
+        )
+    if amount > Decimal(str(rules["amount_limit"]["maximum"])):
+        add("amount_limit", "issue", "Claim exceeds the policy amount limit.")
+    allowed = rules["allowed_category"]["categories"]
+    for line in claim["lines"]:
+        if line["category"] not in allowed:
+            add(
+                "allowed_category",
+                "issue",
+                f"Category {line['category']} is not reimbursable.",
+            )
+        expense_date = date.fromisoformat(line["expense_date"])
+        submitted = date.fromisoformat(claim["submitted_date"])
+        if expense_date > today or expense_date > submitted or submitted > today:
+            add(
+                "date_validity",
+                "issue",
+                "Expense/submission date is in the future or expense follows submission.",
+            )
+        elif (submitted - expense_date).days > rules["date_validity"][
+            "maximum_age_days"
+        ]:
+            add(
+                "date_validity",
+                "issue",
+                "Expense was submitted after the allowed period.",
+            )
+        receipts = [
+            e
+            for e in evidence
+            if e["kind"] == "receipt" and e["line_id"] == line["id"] and e["verified"]
+        ]
+        if rules["receipt_required"]["required"] and not receipts:
+            add(
+                "receipt_required",
+                "unverified",
+                f"Verified receipt missing for {line['description']}.",
+            )
+    if duplicates:
+        add(
+            "duplicate",
+            "unverified",
+            "Receipt fingerprint appears on another claim.",
+            duplicates,
+        )
+    if not findings:
+        add(
+            "compliant",
+            "pass",
+            "All deterministic policy checks passed.",
+            [e["id"] for e in evidence],
+        )
+    return findings

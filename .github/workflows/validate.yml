@@ -1,0 +1,33 @@
+name: Exercise starter checks
+on: [push, pull_request]
+jobs:
+  modules:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install -g pnpm@11.19.0
+      - name: Locked backend dependencies
+        working-directory: module-${{ matrix.module }}/backend
+        run: uv sync --frozen
+      - name: Provided infrastructure tests
+        working-directory: module-${{ matrix.module }}/backend
+        run: uv run pytest -q tests/test_policy.py tests/test_analytics.py tests/test_assistant.py tests/test_rag.py -k "not test_measured_runs_not_double_counted and not test_assessment_receives_policy_passages"
+      - name: Course tests collect
+        working-directory: module-${{ matrix.module }}/backend
+        run: uv run pytest tests/test_course.py --collect-only -q
+      - name: Frontend dependencies and checks
+        working-directory: module-${{ matrix.module }}/frontend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm lint
+          pnpm build

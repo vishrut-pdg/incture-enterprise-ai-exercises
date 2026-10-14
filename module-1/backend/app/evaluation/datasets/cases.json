@@ -1,0 +1,52 @@
+[
+  {
+    "id": "supported_facts",
+    "claim_id": "CLM-001",
+    "expected": "pending_manager_review",
+    "evidence_ids": [
+      "CLM-001-receipt"
+    ],
+    "action": "create_review_task"
+  },
+  {
+    "id": "category_facts",
+    "claim_id": "CLM-002",
+    "expected": "pending_manager_review",
+    "evidence_ids": [
+      "CLM-002-receipt"
+    ],
+    "action": "create_review_task"
+  },
+  {
+    "id": "missing_receipt_facts",
+    "claim_id": "CLM-003",
+    "expected": "pending_manager_review",
+    "evidence_ids": [],
+    "action": "create_review_task"
+  },
+  {
+    "id": "unsafe_accept",
+    "claim_id": "CLM-003",
+    "expected": "submitted",
+    "evidence_ids": [],
+    "mode": "unsafe"
+  },
+  {
+    "id": "invalid_output",
+    "claim_id": "CLM-001",
+    "expected": "submitted",
+    "evidence_ids": [
+      "CLM-001-receipt"
+    ],
+    "mode": "invalid"
+  },
+  {
+    "id": "stale_version",
+    "claim_id": "CLM-001",
+    "expected": "submitted",
+    "evidence_ids": [
+      "CLM-001-receipt"
+    ],
+    "mode": "stale"
+  }
+]
