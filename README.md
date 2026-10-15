@@ -16,6 +16,8 @@ The instructor shows the complete demo application. This repository is where lea
 
 ### Fastest path
 
+**Windows users:** complete the [Windows Bash setup](WINDOWS.md) first. Run the course commands in **Ubuntu on WSL2**. Git Bash alone does not provide the Linux tools and Python environment paths used by these scripts.
+
 Install Git, Python 3.12, uv, Node 22.12+ (24 LTS recommended), pnpm 11.19.0 and Docker with Compose. Start Docker. No cloud account is needed.
 
 ```bash
@@ -45,6 +47,35 @@ Get `MODULE 1 EXERCISE PASSED`. Stop the app with Ctrl+C, then continue:
 ```
 
 Module 2 includes completed grounded retrieval. You never need to copy Module 1 code or change branches. Only one module uses application ports 5173/8000 at a time. Separate databases and queue names preserve each module's progress. Exercise PostgreSQL/Redis use **55432/56379** and Compose project `incture-exercises`.
+
+### Windows Bash commands
+
+After the one-time [WSL2, Docker and dependency setup](WINDOWS.md), run these in an **Ubuntu** terminal, from the repository root:
+
+```bash
+bash scripts/doctor.sh 1 --prerequisites
+bash scripts/setup-module1.sh
+bash scripts/doctor.sh 1
+bash scripts/start-module1.sh
+```
+
+In a second Ubuntu terminal, open the same repository and validate after completing the TODOs:
+
+```bash
+cd ~/projects/incture-enterprise-ai-exercises
+bash scripts/test-module1.sh
+```
+
+Stop Module 1 with Ctrl+C in its start terminal before starting Module 2:
+
+```bash
+bash scripts/setup-module2.sh
+bash scripts/start-module2.sh
+# In the second Ubuntu terminal after completing Module 2:
+bash scripts/test-module2.sh
+```
+
+To reset application data, stop the module first, then run `bash scripts/reset-module1.sh` or `bash scripts/reset-module2.sh`. Learner code is preserved. Open the app in your Windows browser at http://localhost:5173.
 
 ### Reset application data
 

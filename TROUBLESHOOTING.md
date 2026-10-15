@@ -1,5 +1,7 @@
 # Troubleshooting
 
+**Windows:** use [Ubuntu Bash on WSL2](WINDOWS.md). That guide covers installation, Docker integration, missing commands, LF line endings and both modules.
+
 Run commands from the repository root. Examples use Module 1; substitute Module 2's path and wrapper when needed. Begin with `./scripts/doctor.sh 1`. Stop the application with Ctrl+C before resetting or switching modules.
 
 ## Docker is not running

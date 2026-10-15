@@ -31,11 +31,11 @@ Build a grounded factual summary inside the same application shown by the instru
 
 ## Start the application
 
-From the repository root:
+From the repository root. **Windows:** first follow [Windows Bash setup](../WINDOWS.md), then run these commands in Ubuntu on WSL2:
 
 ```bash
-./scripts/setup-module1.sh
-./scripts/start-module1.sh
+bash scripts/setup-module1.sh
+bash scripts/start-module1.sh
 ```
 
 ## Run the exercise
@@ -45,7 +45,7 @@ Open http://localhost:5173. Read [EXERCISE.md](EXERCISE.md), implement `TODO(MOD
 ## Validate
 
 ```bash
-./scripts/test-module1.sh
+bash scripts/test-module1.sh
 ```
 
 ## Success looks like

@@ -30,11 +30,11 @@ Build a structured recommendation for manager review inside the same application
 
 ## Start the application
 
-From the repository root:
+From the repository root. **Windows:** first follow [Windows Bash setup](../WINDOWS.md), then run these commands in Ubuntu on WSL2:
 
 ```bash
-./scripts/setup-module2.sh
-./scripts/start-module2.sh
+bash scripts/setup-module2.sh
+bash scripts/start-module2.sh
 ```
 
 ## Run the exercise
@@ -44,7 +44,7 @@ Open http://localhost:5173. Read [EXERCISE.md](EXERCISE.md), implement `TODO(MOD
 ## Validate
 
 ```bash
-./scripts/test-module2.sh
+bash scripts/test-module2.sh
 ```
 
 ## Success looks like
