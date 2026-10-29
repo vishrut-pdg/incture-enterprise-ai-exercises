@@ -21,11 +21,11 @@ Paths below are relative to `module-1/` or `module-2/`:
 9. `backend/app/ai/providers/mock.py` — repeatable local model response.
 10. `backend/app/db/repositories/claims.py` and `db/models/` — persisted records.
 
-Only `app/exercises/summary.py` (Module 1) and `app/exercises/recommendation.py` (Module 2) are learner edits. Search `TODO(MODULE1)` or `TODO(MODULE2)` in the corresponding module. There are four and three TODOs respectively. Expect roughly 20–40 meaningful lines, rather than a plumbing project.
+Learner edits are `app/exercises/summary.py` (Module 1), `app/exercises/recommendation.py` (Module 2), `app/exercises/execution.py` (Module 3) and `app/exercises/autonomy.py` (Module 4). Search `TODO(MODULE1)` or `TODO(MODULE2)` in the corresponding module. There are four and three TODOs respectively. Expect roughly 20–40 meaningful lines, rather than a plumbing project.
 
 ## Provider path
 
-Both `.env.example` files default to `LLM_PROVIDER=mock`, `RAG_ENABLED=false` and mock embeddings. Mock needs no credentials or network inference. Optional Ollama: install it, run `ollama serve`, run `ollama pull` with the `LLM_MODEL` value from your module .env, set `LLM_PROVIDER=ollama`, and restart the app. Vertex and BTP adapters are retained reference infrastructure. Their optional dependencies and credentials are outside the exercise golden path.
+All four `.env.example` files default to `LLM_PROVIDER=mock`, `RAG_ENABLED=false` and mock embeddings. Mock needs no credentials or network inference. Optional Ollama: install it, run `ollama serve`, run `ollama pull` with the `LLM_MODEL` value from your module .env, set `LLM_PROVIDER=ollama`, and restart the app. Vertex and BTP adapters are retained reference infrastructure. Their optional dependencies and credentials are outside the exercise golden path.
 
 Optional policy retrieval uses `docs/policies/README.md`. Set `RAG_ENABLED=true` and `EMBEDDING_PROVIDER=mock`, then rerun setup to index it. Cloud embeddings are optional. No RAG index is needed when retrieval is disabled.
 
@@ -36,3 +36,13 @@ Schemas, migrations, policy rules, seed data, repositories, provider adapters, m
 ## Common mistakes
 
 Module 1: asking the model if a receipt exists; calculating policy inside a prompt; passing ORM objects; inventing evidence IDs; adding recommendations. Module 2: arbitrary recommendation strings; missing source validation; finalizing claims from AI advice; bypassing Pydantic; calling Ollama or Vertex directly instead of the gateway.
+
+## Module 3 — Execute with controls
+
+Follow CLM-001, CLM-002 and CLM-003 through `ClaimService.finish` into `app/exercises/execution.py`. Complete four `TODO(MODULE3)` markers. Confidence, policy permissions, deterministic findings and evidence coverage decide eligibility. The application executes only eligible advice; other cases still need a manager. Historical reviewed outcomes cannot override current rules.
+
+## Module 4 — Investigate and decide autonomously
+
+Follow the worker's `scan_claims`, `ClaimAgent` investigation stage, gateway validation and `ClaimService.autonomous_assessment` into `app/exercises/autonomy.py`. Complete four `TODO(MODULE4)` markers. Both stages must substantiate acceptance; the supplied autonomous policy rejects unmet requirements, including missing receipts. Failed inference/validation remains undecided for technical retry. Discovery, scheduling, logging and database writes are provided.
+
+Do not copy your earlier learner files into later starters. Each module starts with the earlier capabilities completed. Only one module runs on the shared application ports at a time; every module has its own database and queue. Use the corresponding setup/start/test/reset wrapper numbered 1–4.

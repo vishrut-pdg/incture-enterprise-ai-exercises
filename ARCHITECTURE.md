@@ -10,11 +10,11 @@ flowchart TD
  LLMGateway --> UsageMetering
 ```
 
-The agent retrieves facts through ClaimTools and calls LLMGateway for inference. The gateway validates shape and references before ClaimService records the summary or advice and creates manager review. An ARQ worker consumes a separate module queue. Failed model processing leaves the claim undecided and records an execution failure.
+The agent retrieves facts through ClaimTools and calls LLMGateway for inference. The gateway validates shape and references before ClaimService records the summary/advice and applies the module-specific decision boundary. Modules 1/2 retain human decisions; Module 3 automates eligible advice and escalates uncertainty; Module 4 investigates and decides automatically under the supplied course policy. An ARQ worker consumes a separate module queue. Failed model processing leaves the claim undecided and records an execution failure.
 
 ## Actual codebase map
 
-Within either module's `backend/app/`:
+Within each module's `backend/app/`:
 
 | Path | Owns |
 | --- | --- |
@@ -38,20 +38,20 @@ Within either module's `backend/app/`:
 
 - Agent ≠ database access: tools delegate to ClaimService.
 - LLM ≠ policy engine: application code calculates checks first.
-- Recommendation ≠ final decision: the manager records Accept/Reject.
+- Recommendation ≠ final decision: Modules 1/2 keep decisions manager-owned; Modules 3/4 execute only through application controls.
 - AI output ≠ trusted until validated: strict schema plus known finding/evidence IDs.
 - Evidence ≠ model-generated text: source evidence comes from persisted records.
 
-The existing API uses `findings` for finding codes and lowercase `accept`/`reject` for recommendations. The UI displays Accept/Reject. Preserve this reference contract; do not rename model fields to match prose.
+The existing API uses `findings` for finding codes and lowercase recommendations. Module 2 uses `accept`/`reject`; Module 3 may also recommend `investigate`. Module 4 autonomous output is binary, while its retained human-review compatibility schema supports `investigate`. The UI displays Accept/Reject. Preserve this reference contract; do not rename model fields to match prose.
 
 ## Isolation
 
-| Resource | Module 1 | Module 2 |
-| --- | --- | --- |
-| Database | `exercises_module1` | `exercises_module2` |
-| Queue | `exercises-module1` | `exercises-module2` |
-| PostgreSQL / Redis ports | 55432 / 56379 | 55432 / 56379 |
-| API / frontend ports | 8000 / 5173 | 8000 / 5173 |
+| Resource | Module 1 | Module 2 | Module 3 | Module 4 |
+| --- | --- | --- | --- | --- |
+| Database | `exercises_module1` | `exercises_module2` | `exercises_module3` | `exercises_module4` |
+| Queue | `exercises-module1` | `exercises-module2` | `exercises-module3` | `exercises-module4` |
+| PostgreSQL / Redis ports | 55432 / 56379 | 55432 / 56379 | 55432 / 56379 | 55432 / 56379 |
+| API / frontend ports | 8000 / 5173 | 8000 / 5173 | 8000 / 5173 | 8000 / 5173 |
 
 Stop one application before starting the other. Bootstrap/reset refuse unexpected database names or infrastructure addresses. Reset operates only on the selected module's dedicated data. No script uses the demo Compose project.
 

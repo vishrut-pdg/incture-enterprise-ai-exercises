@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 module="${1:?module required}"; operation="${2:?operation required}"
-[[ "$module" == 1 || "$module" == 2 ]] || { echo 'Choose module 1 or 2'; exit 1; }
+[[ "$module" =~ ^[1-4]$ ]] || { echo 'Choose module 1, 2, 3 or 4'; exit 1; }
 APP="$ROOT/module-$module"
 compose() { docker compose -p incture-exercises -f "$ROOT/docker-compose.yaml" "$@"; }
 py() { (cd "$APP/backend" && uv run "$@"); }

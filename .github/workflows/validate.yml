@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [1, 2]
+        module: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -21,6 +21,10 @@ jobs:
       - name: Provided infrastructure tests
         working-directory: module-${{ matrix.module }}/backend
         run: uv run pytest -q tests/test_policy.py tests/test_analytics.py tests/test_assistant.py tests/test_rag.py -k "not test_measured_runs_not_double_counted and not test_assessment_receives_policy_passages"
+      - name: Autonomous reset isolation
+        if: matrix.module == 4
+        working-directory: module-4/backend
+        run: uv run pytest -q tests/test_course_reset.py
       - name: Course tests collect
         working-directory: module-${{ matrix.module }}/backend
         run: uv run pytest tests/test_course.py --collect-only -q

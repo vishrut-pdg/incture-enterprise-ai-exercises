@@ -119,7 +119,31 @@ bash scripts/test-module2.sh
 
 Only one module runs on ports 5173/8000 at a time. Data and queues remain separate. Exercise PostgreSQL/Redis use ports 55432/56379.
 
-## 7. Reset application data
+## 7. Continue to Modules 3 and 4
+
+Stop the previous module with Ctrl+C in its start terminal. Use the same Ubuntu checkout and installed tools. From the repository root:
+
+```bash
+bash scripts/setup-module3.sh
+bash scripts/doctor.sh 3
+bash scripts/start-module3.sh
+# In a second Ubuntu terminal, after completing Module 3:
+bash scripts/test-module3.sh
+```
+
+Stop Module 3 before starting Module 4:
+
+```bash
+bash scripts/setup-module4.sh
+bash scripts/doctor.sh 4
+bash scripts/start-module4.sh
+# In a second Ubuntu terminal, after completing Module 4:
+bash scripts/test-module4.sh
+```
+
+Module 3 uses Run for controlled execution and retains manager review for uncertainty. Module 4 starts autonomous discovery automatically; it has no Run/approval step. Its untouched TODO starter safely records failed processing until implemented.
+
+## 8. Reset application data
 
 Stop the running module with Ctrl+C first. Choose the module you want to reset:
 
@@ -127,6 +151,9 @@ Stop the running module with Ctrl+C first. Choose the module you want to reset:
 bash scripts/reset-module1.sh
 # Or, for Module 2:
 bash scripts/reset-module2.sh
+# Or, for the later modules:
+bash scripts/reset-module3.sh
+bash scripts/reset-module4.sh
 ```
 
 These commands preserve learner source code. After reset, use that module's start command again.

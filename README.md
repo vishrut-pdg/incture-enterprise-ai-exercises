@@ -3,7 +3,7 @@
 
 ### What this repository is
 
-The instructor shows the complete demo application. This repository is where learners code inside the same architecture. It currently provides **Module 1 and Module 2** exercises. Modules 3 and 4 are instructor demonstrations / future exercises.
+The instructor shows the complete demo application. This repository is where learners code inside the same architecture. It provides **Modules 1–4** as independent learner exercises, derived from the instructor references.
 
 ### Course progression
 
@@ -11,8 +11,8 @@ The instructor shows the complete demo application. This repository is where lea
 | --- | --- | --- |
 | 1 — Understand and Retrieve | What is true about this claim? | Facts + policy + evidence → grounded factual summary |
 | 2 — Assess and Explain | What should we do? | Grounded context → validated Accept/Reject recommendation |
-| 3 — Execute | Instructor demonstration / future exercise | Controlled execution |
-| 4 — Autonomous | Instructor demonstration / future exercise | Bounded autonomy |
+| 3 — Execute | When may the application act? | Validated advice → eligible execution or manager review |
+| 4 — Autonomous | How can the workflow resolve claims itself? | Grounded investigation + assessment → bounded automatic decision |
 
 ### Fastest path
 
@@ -48,6 +48,28 @@ Get `MODULE 1 EXERCISE PASSED`. Stop the app with Ctrl+C, then continue:
 
 Module 2 includes completed grounded retrieval. You never need to copy Module 1 code or change branches. Only one module uses application ports 5173/8000 at a time. Separate databases and queue names preserve each module's progress. Exercise PostgreSQL/Redis use **55432/56379** and Compose project `incture-exercises`.
 
+### Continue to Modules 3 and 4
+
+Stop the previous module with Ctrl+C before starting another. Each starter includes the earlier completed capabilities; no learner code copying or branch switching is needed.
+
+```bash
+bash scripts/setup-module3.sh
+bash scripts/start-module3.sh
+# In another terminal after completing module-3/EXERCISE.md:
+bash scripts/test-module3.sh
+```
+
+Module 3 accepts eligible claims, rejects supported violations, and sends missing evidence or uncertainty to manager review. Stop Module 3, then continue:
+
+```bash
+bash scripts/setup-module4.sh
+bash scripts/start-module4.sh
+# In another terminal after completing module-4/EXERCISE.md:
+bash scripts/test-module4.sh
+```
+
+Module 4's worker discovers claims automatically. Both grounded model stages must support acceptance; unmet requirements follow the supplied autonomous rejection policy. Technical failures remain undecided and retry. The untouched starter records safe failures until its TODOs are complete.
+
 ### Windows Bash commands
 
 After the one-time [WSL2, Docker and dependency setup](WINDOWS.md), run these in an **Ubuntu** terminal, from the repository root:
@@ -79,14 +101,14 @@ To reset application data, stop the module first, then run `bash scripts/reset-m
 
 ### Reset application data
 
-Stop the app first. `./scripts/reset-module1.sh` or `./scripts/reset-module2.sh` restores seeded claims, clears that module's queue, and preserves learner source. Setup is safe to rerun and preserves existing decisions. Reset is the explicit way to start with fresh data.
+Stop the app first. `bash scripts/reset-moduleN.sh` (replace `N` with 1, 2, 3 or 4) restores seeded claims, clears that module's queue (including stable autonomous job results for Module 4), and preserves learner source. Setup is safe to rerun and preserves existing decisions. Reset is the explicit way to start with fresh data.
 
 ### Where to go next
 
 - [Course guide](COURSE_GUIDE.md) — follow one claim through the code.
 - [Architecture](ARCHITECTURE.md) — ownership boundaries and actual paths.
 - [Troubleshooting](TROUBLESHOOTING.md) — symptom, check, cause and fix.
-- [Module 1](module-1/README.md) / [Module 2](module-2/README.md) — allowed edits and success criteria.
+- [Module 1](module-1/README.md) / [Module 2](module-2/README.md) / [Module 3](module-3/README.md) / [Module 4](module-4/README.md) — allowed edits and success criteria.
 - [Contributing](CONTRIBUTING.md) — keep exercises small and tests meaningful.
 
 The AI Usage & Performance dashboard is provided infrastructure. Usage telemetry shows how the AI runtime is operating. It does not tell us by itself whether the AI response is correct.

@@ -1,8 +1,8 @@
 # Troubleshooting
 
-**Windows:** use [Ubuntu Bash on WSL2](WINDOWS.md). That guide covers installation, Docker integration, missing commands, LF line endings and both modules.
+**Windows:** use [Ubuntu Bash on WSL2](WINDOWS.md). That guide covers installation, Docker integration, missing commands, LF line endings and all four modules.
 
-Run commands from the repository root. Examples use Module 1; substitute Module 2's path and wrapper when needed. Begin with `./scripts/doctor.sh 1`. Stop the application with Ctrl+C before resetting or switching modules.
+Run commands from the repository root. Examples use Module 1; substitute the selected module number (1–4) in paths and wrappers when needed. Begin with `./scripts/doctor.sh 1`. Stop the application with Ctrl+C before resetting or switching modules.
 
 ## Docker is not running
 
@@ -82,3 +82,11 @@ If you prefer separate logs, run setup, then these commands from the repository 
 ## Reset data versus reset code
 
 `./scripts/reset-module1.sh` resets only the selected module's application data. It refuses unexpected database/Redis settings. Stop all API/worker/frontend processes first, including any fallback terminals. It never resets learner source. Save work and explicitly restore a selected file with Git only if you intentionally want to discard code changes.
+
+## Module 3 does not automatically execute a recommendation
+
+Check confidence, unresolved questions, policy permissions, current check severity and cited evidence. Automatic acceptance needs all checks passing and complete evidence; rejection needs a cited deterministic rejection finding. CLM-003 goes to manager review. Run `bash scripts/test-module3.sh` and inspect `module-3/DEBUGGING.md` before changing infrastructure.
+
+## Module 4 has no Run button / claims remain undecided
+
+The worker discovers claims at startup and every five seconds. Check its heartbeat and execution history. An untouched starter fails at `resolve_assessment`; complete `TODO(MODULE4)` and run `bash scripts/test-module4.sh`. Technical failures stay undecided and retry after cooldown (300 seconds by default). To retry immediately with fresh seed data, stop the app, run `bash scripts/reset-module4.sh`, then restart. Reset clears only this module's stable autonomous job keys. Both stages must substantiate acceptance; missing receipt requirements follow the supplied rejection policy. Do not fabricate evidence or add a manager approval step.
